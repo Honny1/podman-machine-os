@@ -121,18 +121,118 @@ PACKAGES=(
 
     # git-core for Containerfile `ADD <gitrepo>` clone feature
     git-core
+    git-daemon
 
     # Guest agent (vsock) for time sync and host-guest features (macOS vfkit/libkrun)
     qemu-guest-agent
+
+    # --- Developer tools for building podman/buildah from source ---
+    # Build essentials
+    golang
+    gcc
+    make
+    automake
+    autoconf
+    libtool
+    pkgconfig
+    redhat-rpm-config
+
+    # Rust toolchain for netavark/aardvark-dns
+    rust
+    cargo
+    clippy
+    rustfmt
+    protobuf-compiler
+    protobuf-c
+    protobuf-devel
+    systemd-devel
+
+    # Development libraries required by podman/buildah
+    gpgme-devel
+    libassuan-devel
+    libseccomp-devel
+    device-mapper-devel
+    btrfs-progs-devel
+    glib2-devel
+    libselinux-devel
+    ostree-devel
+    libcap-devel
+    libnet-devel
+    glibc-devel
+    glibc-static
+    libblkid-devel
+
+    # container-libs (storage/image/common) development dependencies
+    fuse3
+    fuse3-devel
+    fuse-overlayfs
+    composefs
+    sqlite-devel
+    openssl-devel
+    libxml2-devel
+    selinux-policy-devel
+    container-selinux
+    policycoreutils
+
+    # Rootless networking (needed for container-libs/common and podman tests)
+    passt
+    slirp4netns
+
+    # Netavark/aardvark-dns test utilities (no services)
+    bind-utils
+    net-tools
+    iproute-tc
+    nftables
+
+    # Documentation and code generation
+    go-md2man
+    man-db
+
+    # Testing and linting tools
+    bats
+    ShellCheck
+    python3-pip
+    codespell
+
+    # --- Developer experience ---
+    vim-enhanced
+    tmux
+    htop
+    jq
+    curl
+    wget
+    rsync
+    unzip
+    tar
+    xz
+    zip
+    fzf
+    ripgrep
+    bat
+    findutils
+    lsof
+    socat
+    nmap-ncat
+
+    # Container/image tools
+    skopeo
+    buildah
+
+    # Conformance test dependencies (install docker on-demand, not at image build)
+    runc
+    bzip2
 )
 
 dnf install -y "${PACKAGES[@]}"
 
-# Remove unwanted packages (mainly relevant for coreos)
-dnf remove -y moby-engine containerd runc toolbox qed-firmware docker-cli
+# Install golangci-lint (used by container-libs, podman, buildah for linting)
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b /usr/local/bin
 
-# Remove man pages (man binary is not present)
-rm -fr /var/cache /usr/share/man
+# Remove unwanted packages
+dnf remove -y toolbox qed-firmware moby-engine containerd runc docker-cli 2>/dev/null || true
+
+# Clean caches
+rm -fr /var/cache
 dnf -y clean all
 
 systemctl enable rhsmcertd.service

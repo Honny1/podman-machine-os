@@ -69,8 +69,8 @@ get_disk_type_from_name() {
 export SRCDIR="${TMT_TREE:-${CIRRUS_WORKING_DIR:-..}}"
 export OUTDIR="${OUTDIR:-${TMT_TEST_DATA:-$(git rev-parse --show-toplevel)/outdir}}"
 
-REPO="${REPO:-quay.io/podman}"
-OCI_NAME="machine-os"
+REPO="${REPO:-quay.io/jrodak}"
+OCI_NAME="machine-os-dev"
 # Image version is only x.y so we trim of the .z part here
 OCI_VERSION="${PODMAN_VERSION%.*}"
 FULL_IMAGE_NAME="${REPO}/${OCI_NAME}:${OCI_VERSION}"
